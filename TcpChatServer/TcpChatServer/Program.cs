@@ -17,15 +17,18 @@ namespace TcpChatServer {
             Console.WriteLine("Connection accepted, server activated.");
 
             NetworkStream ns = connectionSocket.GetStream();
+            StreamWriter sw = new StreamWriter(ns);
+            sw.AutoFlush = true;
             StreamReader sr = new StreamReader(ns);
-            string message = null;
-            while (message == null) {
-                message = sr.ReadLine();
-                Console.WriteLine("Client: " + message);
-                message = null;
-            }
 
-            Console.ReadLine();
+            string readMessage = null;
+            string writeMessage = null;
+            while (true) {
+                writeMessage = Console.ReadLine();
+                sw.WriteLine(writeMessage);
+                readMessage = sr.ReadLine();
+                Console.WriteLine("Client: " + readMessage);
+            }
         }
     }
 }
