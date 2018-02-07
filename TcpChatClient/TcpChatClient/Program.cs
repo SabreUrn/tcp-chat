@@ -9,9 +9,26 @@ using System.Threading.Tasks;
 namespace TcpChatClient {
     class Program {
         static void Main(string[] args) {
-            TcpClient clientSocket;
+            TcpClient clientSocket = WaitForServer();
+            Console.WriteLine("Successfully connected to server.");
+
+            NetworkStream ns = clientSocket.GetStream();
+            StreamWriter sw = new StreamWriter(ns);
+            sw.AutoFlush = true;
+            StreamReader sr = new StreamReader(ns);
+
+            while (true) {
+                string writeMessage = Console.ReadLine();
+                sw.WriteLine(writeMessage);
+                string readMessage = sr.ReadLine();
+                Console.WriteLine("Server: " + readMessage);
+            }
+        }
+
+        static public TcpClient WaitForServer() {
+            TcpClient clientSocket = new TcpClient();
             bool serverFound = false;
-            /*
+
             while (!serverFound) {
                 try {
                     clientSocket = new TcpClient("localhost", 6789);
@@ -22,23 +39,8 @@ namespace TcpChatClient {
                     System.Threading.Thread.Sleep(5000);
                 }
             }
-            */
-            clientSocket = new TcpClient("localhost", 6789);
-            Console.WriteLine("Successfully connected to server.");
 
-            NetworkStream ns = clientSocket.GetStream();
-            StreamWriter sw = new StreamWriter(ns);
-            sw.AutoFlush = true;
-            StreamReader sr = new StreamReader(ns);
-
-            string readMessage = null;
-            string writeMessage = null;
-            while (true) {
-                readMessage = sr.ReadLine();
-                Console.WriteLine("Server: " + readMessage);
-                writeMessage = Console.ReadLine();
-                sw.WriteLine(writeMessage);
-            }
+            return clientSocket;
         }
     }
 }
