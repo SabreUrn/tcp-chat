@@ -21,14 +21,25 @@ namespace TcpChatServer {
             sw.AutoFlush = true;
             StreamReader sr = new StreamReader(ns);
 
-            string readMessage = null;
-            string writeMessage = null;
+            Task<string> readMessage = null;
+            Task<string> writeMessage = null;
             while (true) {
-                writeMessage = Console.ReadLine();
-                sw.WriteLine(writeMessage);
-                readMessage = sr.ReadLine();
-                Console.WriteLine("Client: " + readMessage);
+                //writeMessage = Console.In.ReadLineAsync();
+                //sw.WriteLineAsync(Console.ReadLine());
+                WriteMessage(sw);
+                readMessage = ReadMessage(sr);
+                Console.WriteLine("Client: " + readMessage.Result);
             }
+        }
+
+        public static async Task<string> ReadMessage(StreamReader sr) {
+            string readMessage = await sr.ReadLineAsync();
+            //readMessage = sr.ReadLineAsync();
+            return readMessage;
+        }
+
+        public static async Task WriteMessage(StreamWriter sw) {
+            await sw.WriteLineAsync(Console.ReadLine());
         }
     }
 }

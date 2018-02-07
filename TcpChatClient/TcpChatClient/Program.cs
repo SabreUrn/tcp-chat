@@ -17,15 +17,20 @@ namespace TcpChatClient {
             sw.AutoFlush = true;
             StreamReader sr = new StreamReader(ns);
 
+            Task<string> writeMessage = null;
+            Task<string> readMessage = null;
             while (true) {
-                string writeMessage = Console.ReadLine();
-                sw.WriteLine(writeMessage);
-                string readMessage = sr.ReadLine();
-                Console.WriteLine("Server: " + readMessage);
+                //writeMessage = Console.In.ReadLineAsync();
+                sw.WriteLineAsync(Console.ReadLine());
+                readMessage = sr.ReadLineAsync();
+                if (readMessage != null) {
+                    Console.WriteLine("Server: " + readMessage.Result);
+                    readMessage = null;
+                }
             }
         }
 
-        static private TcpClient WaitForServer() {
+        static public TcpClient WaitForServer() {
             TcpClient clientSocket = new TcpClient();
             bool serverFound = false;
 
