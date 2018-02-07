@@ -25,7 +25,7 @@ namespace TcpChatClient {
             }
         }
 
-        static public TcpClient WaitForServer() {
+        static private TcpClient WaitForServer() {
             TcpClient clientSocket = new TcpClient();
             bool serverFound = false;
 
